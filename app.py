@@ -26,7 +26,7 @@ def get_db_connection():
 def consulta(name):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)  # Usar dictionary=True para obtener resultados como diccionarios
-    cursor.execute('SELECT * FROM {TABLE_NAME} where name = %{name}%') 
+    cursor.execute(f'SELECT * FROM {TABLE_NAME} where name = %{name}%') 
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -39,12 +39,12 @@ def set_data(name, version, quantity):
     # check if name and version actually exist
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM {TABLE_NAME} where name = %{name}% and version = %{version}%')
+    cursor.execute(f'SELECT * FROM {TABLE_NAME} where name = %{name}% and version = %{version}%')
     if cursor.fetchone() is not None:
-        cursor.execute('UPDATE {TABLE_NAME} SET quantity = %{quantity}% WHERE name = %{name}% and version = %{version}%')
+        cursor.execute(f'UPDATE {TABLE_NAME} SET quantity = %{quantity}% WHERE name = %{name}% and version = %{version}%')
         return jsonify({'message': 'Updated'})
     else:
-        cursor.execute('INSERT INTO {TABLE_NAME} (name, version, quantity) VALUES (%s, %s, %s)', (name, version, quantity))
+        cursor.execute(f'INSERT INTO {TABLE_NAME} (name, version, quantity) VALUES ({name}, {version}, {quantity})')
         return jsonify({'message': 'Inserted'})
 
 if __name__ == '__main__':
